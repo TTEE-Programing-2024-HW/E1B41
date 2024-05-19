@@ -160,7 +160,7 @@ int main(void) {
                     printf("按任意鍵返回主選單...\n");
                     getch();
                     system("cls");
-                } else if (option == 'b') {
+                } else if (option=='b') {
                     int num_seats;
                     printf("請輸入需要的座位數量（1~4）: ");
                     scanf("%d", &num_seats);
@@ -185,7 +185,7 @@ int main(void) {
                             }
                             printf("\n座位已確認。\n");
                             system("pause");
-                            clear_screen();
+                            return 0;
                         } else {
                             // 清除建議座位標記
                             for (int i=0;i<ROWS;i++) {
@@ -205,7 +205,7 @@ int main(void) {
                         return 0;
                     }
                 } 
-                else if (option == 'c') {
+                else if (option=='c') {
                 printf("請逐一輸入座位選擇，如1-2、2-9（按Enter鍵確認選擇）：\n");
                 int chosen_seats[4][2]; // 用於儲存使用者的選擇
                 int num_chosen_seats = 0; // 使用者已選擇的座位數量
@@ -247,15 +247,32 @@ int main(void) {
 
             // 顯示座位表
             display_seats(seats);
-
-            // 提示按任意鍵返回主選單
-            printf("按任意鍵返回主選單...\n");
-            getch();
-            system("cls");
+            system("pause");
+            return 0;
         }
-
+            
+			else if(option=='d') {
+                    printf("Continue? (y/n): ");
+                    char exit_option=getch();
+                    if (exit_option=='y') {
+                        system("cls");
+                        continue;
+                    } else if (exit_option=='n') {
+                        printf("程式結束。\n");
+                        break;
+                    } else {
+                        printf("無效的選擇。\n");
+                        system("pause");
+                        system("cls");
+                    }
+                } else {
+                    printf("無效的選項。\n");
+                    system("pause");
+                   system("cls"); 
             }
+        }
 			break;
+		
         } else {
             printf("剩餘%d次機會\n", i - 1);
             if (i-1==0) {  // 輸入最後一次且錯誤時，發出警告音
