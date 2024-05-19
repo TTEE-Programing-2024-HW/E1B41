@@ -6,36 +6,77 @@
 #define ROWS 9
 #define COLS 9
 
-//生成已預訂的座位
+// 生成已預訂的座位
 void generate_seats(char seats[ROWS][COLS]) {
     int reserved = 0;
     while (reserved < 10) {
-        int row = rand() % ROWS;   // 隨機選擇座位位置 
-        int col = rand() % COLS;   
-        if (seats[row][col] == '-') { // 如果座位位置還未被預訂，則將其標記為已預訂 
+        int row = rand() % ROWS;
+        int col = rand() % COLS;
+        if (seats[row][col] == '-') {
             seats[row][col] = '*';
             reserved++;
         }
     }
 }
+
 // 顯示座位表
 void display_seats(char seats[ROWS][COLS]) {
-    printf("123456789\n");
-    for (int i=ROWS;i>0;i--){
-        printf("%d",i);
-        for (int j=0;j<COLS;j++) {
-            printf("%c",seats[i-1][j]);
+    printf("  123456789\n");
+    for (int i = ROWS; i > 0; i--) {
+        printf("%d ", i);
+        for (int j = 0; j < COLS; j++) {
+            printf("%c", seats[i - 1][j]);
         }
         printf("\n");
     }
 }
 
-void clear_screen() { // 清除螢幕 
+// 清除螢幕
+void clear_screen() {
     system("cls");
 }
 
+// 安排座位
+int arrange_seats(char seats[ROWS][COLS], int num_seats) {
+    int found=0;
+    if (num_seats>= 1 && num_seats <= 3) {
+        for (int i=0;i<ROWS;i++) {
+            for (int j=0;j<=COLS-num_seats;j++) {
+                int space=1;
+                for (int k=0;k<num_seats;k++) {
+                    if (seats[i][j+k] != '-') {
+                        space=0;
+                        break;
+                    }
+                }
+                if (space) {
+                    for (int k = 0; k < num_seats; k++) {
+                        seats[i][j + k] = '@';
+                    }
+                    found = 1;
+                    break;
+                }
+            }
+            if (found) break;
+        }
+    } else if (num_seats == 4) {
+        // 優先找同列的連續四個座位
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j <= COLS - 4; j++) {
+                if (seats[i][j] == '-' && seats[i][j + 1] == '-' && seats[i][j + 2] == '-' && seats[i][j + 3] == '-') {
+                    seats[i][j] = seats[i][j + 1] = seats[i][j + 2] = seats[i][j + 3] = '@';
+                    found = 1;
+                    break;
+                }
+            }
+            if (found) break;
+        } 
+    }
+    return found;
+}
+
 int main(void) {
-    //生成個人風格 
+    // 個人風格
     puts("-----------------------------------------------------------------");
     puts("|      EEEEEEEEEEEEEEEE          111         BBBBBBBBBBBBB       |");
     puts("|      EE                       1111         BB           B      |");
@@ -75,33 +116,32 @@ int main(void) {
     puts("|          44444444          111111111                           |");
     puts("------------------------------------------------------------------");
     system("pause");
-    system("cls");
+    clear_screen();
 
-    //輸入密碼 
+    // 輸入密碼
     int password, i;
-    for (i = 3; i > 0; i--) { //使用者輸入密碼，最多三次
-        printf("請輸入密碼: ");  //輸入密碼
+    for (i = 3; i > 0; i--) { // 使用者輸入密碼，最多三次
+        printf("請輸入密碼: ");  // 輸入密碼
         scanf("%d", &password);
-        
+
         if (password == 2024) {
             printf("密碼正確。\n");
             system("pause");
-            system("cls");
+            clear_screen();
 
-            //初始化座位表 
+            // 初始化座位表
             char seats[ROWS][COLS];
             for (int i = 0; i < ROWS; i++) {
                 for (int j = 0; j < COLS; j++) {
                     seats[i][j] = '-';
                 }
             }
-            
-            
-            // 設置隨機數，且生成座位表 
+
+            // 設置隨機數，且生成座位表
             srand(time(0));
             generate_seats(seats);
 
-            char option;   
+            char option;
             while (1) {
                 puts("!!!歡迎!!!");
                 puts("--------------------------");
@@ -112,21 +152,63 @@ int main(void) {
                 puts("--------------------------");
 
                 printf("請輸入一個選項: ");
-                option = getch();   //讀取用戶選擇的選項 
+                option = getch();   // 讀取用戶選擇的選項
                 clear_screen();
 
                 if (option == 'a') {
                     display_seats(seats);
+                    printf("按任意鍵返回主選單...\n");
                     getch();
                     clear_screen();
+                } else if (option == 'b') {
+                    int num_seats;
+                    printf("請輸入需要的座位數量（1~4）: ");
+                    scanf("%d", &num_seats);
+                    if (num_seats < 1 || num_seats > 4) {
+                        printf("無效的座位數量。\n");
+                        system("pause");
+                        clear_screen();
+                        continue;
+                    }
+
+                    if (arrange_seats(seats, num_seats)) {
+                        display_seats(seats);
+                        printf("是否滿意座位安排？(y/n): ");
+                        char confirm = getch();
+                        if (confirm == 'y' || confirm == 'Y') {
+                            for (int i = 0; i < ROWS; i++) {
+                                for (int j = 0; j < COLS; j++) {
+                                    if (seats[i][j] == '@') {
+                                        seats[i][j] = '*';
+                                    }
+                                }
+                            }
+                            printf("\n座位已確認。\n");
+                            system("pause");
+                            clear_screen();
+                        } else {
+                            // 清除建議座位標記
+                            for (int i = 0; i < ROWS; i++) {
+                                for (int j = 0; j < COLS; j++) {
+                                    if (seats[i][j] == '@') {
+                                        seats[i][j] = '-';
+                                    }
+                                }
+                            }
+                            clear_screen();
+                        }
+                    } else {
+                        printf("無法安排連續座位。\n");
+                        system("pause");
+                        clear_screen();
+                    }
                 } 
             }
             break;
         } else {
             printf("剩餘%d次機會\n", i - 1);
-            
-            if (i-1==0) {  //輸入最後一次且錯誤時，發出警告音
-                printf("%c",'\a');
+            if (i - 1 == 0) {  // 輸入最後一次且錯誤時，發出警告音
+                printf("%c", '\a');
                 printf("連續三次輸入錯誤，程式結束。\n");
                 return 0;
             }
