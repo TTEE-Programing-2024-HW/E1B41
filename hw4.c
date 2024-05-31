@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <conio.h>
 
 #define MAX_NAME_LENGTH 50
+#define MAX_STUDENTS 10
 
 typedef struct {
     char name[MAX_NAME_LENGTH];
@@ -11,6 +13,10 @@ typedef struct {
     int physics;
     int english;
 } Student;
+
+float calculateAverage(int math, int physics, int english) {
+    return (math + physics + english) / 3.0;
+}
 
 int main(void) {
     puts("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
@@ -38,14 +44,20 @@ int main(void) {
     puts("|  ++++++++++++++  ------------    $$$$$$$$$$$$$                 %%       ************  |");
     puts("|                                                                                       |");
     puts("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
     system("pause");
     system("cls");
 
     int password, i;
     char choice;
+    Student students[MAX_STUDENTS];
+    int num_students = 0;
+
     for (i = 3; i > 0; i--) {
         printf("請輸入密碼:");
-        scanf("%d", &password);
+        char password_str[50];
+        fgets(password_str, sizeof(password_str), stdin);
+        password = atoi(password_str);
         if (password == 2024) {
             printf("密碼正確。\n");
             system("pause");
@@ -71,8 +83,7 @@ int main(void) {
                         while (getchar() != '\n'); // 清除輸入緩衝區
                     }
 
-                    Student students[n];
-                    for (int j = 0; j < n; j++) {
+                    for (int j = num_students; j < num_students + n && j < MAX_STUDENTS; j++) {
                         printf("輸入學生 %d 資料:\n", j + 1);
                         printf("姓名: ");
                         scanf("%s", students[j].name);
@@ -97,10 +108,23 @@ int main(void) {
                             while (getchar() != '\n'); // 清除輸入緩衝區
                         }
                     }
+                    num_students += n;
                     printf("已成功輸入學生資料。\n");
-                } 
-                else {
-                    printf("無效選項。\n");
+                } else if (choice == 'b') {
+                    system("cls");
+                    if (num_students == 0) {
+                        printf("目前沒有學生資料。\n");
+                    } else {
+                        printf("學生資料如下:\n");
+                        printf("姓名\t學號\t數學\t物理\t英文\t平均成績\n");
+                        printf("-------------------------------------------------\n");
+                        for (int j = 0; j < num_students; j++) {
+                            float avg = calculateAverage(students[j].math, students[j].physics, students[j].english);
+                            printf("%s\t%d\t%d\t%d\t%d\t%.1f\n", students[j].name, students[j].student_id, students[j].math, students[j].physics, students[j].english, avg);
+                        }
+                    }
+                } else if (choice == 'e') {
+                    return 0;  // 退出程式
                 }
             }
             break;
@@ -113,8 +137,7 @@ int main(void) {
         }
     }
 
-    system("pause");
-    system("cls");
     return 0;
 }
+
 
