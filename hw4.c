@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <conio.h>
+#include <conio.h>  // 使用 getch() 函數
 
 #define MAX_NAME_LENGTH 50
 #define MAX_STUDENTS 10
@@ -15,10 +15,12 @@ typedef struct {
     float average;
 } Student;
 
+// 計算平均成績的函數
 float calculateAverage(int math, int physics, int english) {
     return (math + physics + english) / 3.0;
 }
 
+// 根據平均成績對學生進行排序的函數
 void sortStudentsByAverage(Student students[], int num_students) {
     for (int i = 0; i < num_students - 1; i++) {
         for (int j = 0; j < num_students - i - 1; j++) {
@@ -76,6 +78,8 @@ int main(void) {
     Student students[MAX_STUDENTS];
     int num_students = 0;
 
+
+    // 密碼輸入嘗試的迴圈
     for (i = 3; i > 0; i--) {
         printf("請輸入密碼:");
         char password_str[50];
@@ -87,12 +91,13 @@ int main(void) {
             system("cls");
             // 印出選單
             printMenu();
-
+            
+            // 選單循環 
             while (1) {
                 printf("請輸入選項：");
-                choice = getch();
+                choice = getch(); // 獲取字符而不顯示在螢幕上 
                 printf("%c\n", choice);
-                if (choice == 'a') {
+                if (choice == 'a') {  //a輸入學生成績
                     int n;
                     printf("請輸入學生數目 (5~10): ");
                     while (scanf("%d", &n) != 1 || n < 5 || n > 10) {
@@ -128,7 +133,7 @@ int main(void) {
                     }
                     num_students += n;
                     printf("已成功輸入學生資料。\n");
-                } else if (choice == 'b') {
+                } else if (choice == 'b') { // 顯示學生成績
                     system("cls");
                     if (num_students == 0) {
                         printf("目前沒有學生資料。\n");
@@ -164,7 +169,7 @@ int main(void) {
                     printf("按任意鍵繼續...");
                     getch(); // 等待使用者按下任意鍵
                     system("cls"); // 清除螢幕
-                } else if (choice == 'd') {
+                } else if (choice == 'd') {  //輸入d選項 
                     system("cls");
                     if (num_students == 0) {
                         printf("目前沒有學生資料。\n");
