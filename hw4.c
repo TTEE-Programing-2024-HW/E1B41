@@ -62,7 +62,7 @@ int main(void) {
             printf("密碼正確。\n");
             system("pause");
             system("cls");
-            
+            // 印出選單
             puts("----------[Grade System]----------");
             puts("| a. Enter student grades        |");
             puts("| b. Display student grades      |");
@@ -117,21 +117,45 @@ int main(void) {
                     } else {
                         printf("學生資料如下:\n");
                         printf("姓名\t學號\t數學\t物理\t英文\t平均成績\n");
-                        printf("-------------------------------------------------\n");
+                                                printf("-------------------------------------------------\n");
                         for (int j = 0; j < num_students; j++) {
                             float avg = calculateAverage(students[j].math, students[j].physics, students[j].english);
                             printf("%s\t%d\t%d\t%d\t%d\t%.1f\n", students[j].name, students[j].student_id, students[j].math, students[j].physics, students[j].english, avg);
                         }
                     }
+                } else if (choice == 'c') {
+                    system("cls");
+                    if (num_students == 0) {
+                        printf("目前沒有學生資料。\n");
+                    } else {
+                        char search_name[MAX_NAME_LENGTH];
+                        printf("請輸入要搜尋的姓名: ");
+                        scanf("%s", search_name);
+                        int found = 0;
+                        printf("姓名\t學號\t數學\t物理\t英文\t平均成績\n");
+                        printf("-------------------------------------------------\n");
+                        for (int j = 0; j < num_students; j++) {
+                            if (strcmp(students[j].name, search_name) == 0) {
+                                float avg = calculateAverage(students[j].math, students[j].physics, students[j].english);
+                                printf("%s\t%d\t%d\t%d\t%d\t%.1f\n", students[j].name, students[j].student_id, students[j].math, students[j].physics, students[j].english, avg);
+                                found = 1;
+                            }
+                        }
+                        if (!found) {
+                            printf("資料不存在。\n");
+                        }
+                    }
+                    getch(); // 等待使用者按下任意鍵
+                    system("cls"); // 清除螢幕
                 } else if (choice == 'e') {
                     return 0;  // 退出程式
                 }
             }
             break;
         } else {
-            printf("剩餘%d次機會\n", i - 1);
+            printf("剩餘%d次機會\n", i-1);
             if (i == 1) {
-                printf("%c", '\a');
+                printf("%c",'\a');   //發出警告音 
                 return 0;
             }
         }
