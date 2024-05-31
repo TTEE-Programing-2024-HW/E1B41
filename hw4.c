@@ -31,6 +31,16 @@ void sortStudentsByAverage(Student students[], int num_students) {
     }
 }
 
+void printMenu() {
+    puts("----------[Grade System]----------");
+    puts("| a. Enter student grades        |");
+    puts("| b. Display student grades      |");
+    puts("| c. Search for student grades   |");
+    puts("| d. Grade ranking               |");
+    puts("| e. Exit system                 |");
+    puts("----------------------------------");
+}
+
 int main(void) {
     puts("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     puts("|                                                                                       |");
@@ -76,13 +86,7 @@ int main(void) {
             system("pause");
             system("cls");
             // 印出選單
-            puts("----------[Grade System]----------");
-            puts("| a. Enter student grades        |");
-            puts("| b. Display student grades      |");
-            puts("| c. Search for student grades   |");
-            puts("| d. Grade ranking               |");
-            puts("| e. Exit system                 |");
-            puts("----------------------------------");
+            printMenu();
 
             while (1) {
                 printf("請輸入選項：");
@@ -123,7 +127,7 @@ int main(void) {
                         students[j].average = calculateAverage(students[j].math, students[j].physics, students[j].english);
                     }
                     num_students += n;
-                    printf("已成功輸入學生資料。");
+                    printf("已成功輸入學生資料。\n");
                 } else if (choice == 'b') {
                     system("cls");
                     if (num_students == 0) {
@@ -177,10 +181,25 @@ int main(void) {
                     getch(); // 等待使用者按下任意鍵
                     system("cls"); // 清除螢幕
                 } else if (choice == 'e') {
-                    return 0;  // 退出程式
+                    while (1) {
+                        printf("確定離開？ (y/n): ");
+                        choice = getch();
+                        printf("%c\n", choice);
+                        if (choice == 'y') {
+                            return 0;  // 退出程式
+                        } else if (choice == 'n') {
+                            system("cls");
+                            printMenu();  // 顯示選單
+                            break;
+                        } else {
+                            printf("無效的選項，請重新輸入。\n");
+                        }
+                    }
                 } else {
                     printf("無效的選項，請重新輸入。\n");
                 }
+                // 顯示選單
+                
             }
             break;
         } else {
@@ -194,5 +213,4 @@ int main(void) {
 
     return 0;
 }
-
 
