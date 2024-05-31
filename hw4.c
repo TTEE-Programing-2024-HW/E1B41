@@ -12,10 +12,23 @@ typedef struct {
     int math;
     int physics;
     int english;
+    float average;
 } Student;
 
 float calculateAverage(int math, int physics, int english) {
     return (math + physics + english) / 3.0;
+}
+
+void sortStudentsByAverage(Student students[], int num_students) {
+    for (int i = 0; i < num_students - 1; i++) {
+        for (int j = 0; j < num_students - i - 1; j++) {
+            if (students[j].average < students[j + 1].average) {
+                Student temp = students[j];
+                students[j] = students[j + 1];
+                students[j + 1] = temp;
+            }
+        }
+    }
 }
 
 int main(void) {
@@ -84,8 +97,8 @@ int main(void) {
                     }
 
                     for (int j = num_students; j < num_students + n && j < MAX_STUDENTS; j++) {
-                        printf("輸入學生 %d 資料:\n", j + 1);
-                        printf("姓名: ");
+                        printf("輸入學生 %d 資料:\n", j+1);
+                        printf("姓名: "); 
                         scanf("%s", students[j].name);
                         printf("學號 (6位整數): ");
                         while (scanf("%d", &students[j].student_id) != 1 || students[j].student_id < 100000 || students[j].student_id > 999999) {
@@ -107,9 +120,10 @@ int main(void) {
                             printf("輸入錯誤，請輸入0到100之間的成績: ");
                             while (getchar() != '\n'); // 清除輸入緩衝區
                         }
+                        students[j].average = calculateAverage(students[j].math, students[j].physics, students[j].english);
                     }
                     num_students += n;
-                    printf("已成功輸入學生資料。\n");
+                    printf("已成功輸入學生資料。");
                 } else if (choice == 'b') {
                     system("cls");
                     if (num_students == 0) {
@@ -117,10 +131,9 @@ int main(void) {
                     } else {
                         printf("學生資料如下:\n");
                         printf("姓名\t學號\t數學\t物理\t英文\t平均成績\n");
-                                                printf("-------------------------------------------------\n");
+                        printf("-------------------------------------------------\n");
                         for (int j = 0; j < num_students; j++) {
-                            float avg = calculateAverage(students[j].math, students[j].physics, students[j].english);
-                            printf("%s\t%d\t%d\t%d\t%d\t%.1f\n", students[j].name, students[j].student_id, students[j].math, students[j].physics, students[j].english, avg);
+                            printf("%s\t%d\t%d\t%d\t%d\t%.1f\n", students[j].name, students[j].student_id, students[j].math, students[j].physics, students[j].english, students[j].average);
                         }
                     }
                 } else if (choice == 'c') {
@@ -136,8 +149,7 @@ int main(void) {
                         printf("-------------------------------------------------\n");
                         for (int j = 0; j < num_students; j++) {
                             if (strcmp(students[j].name, search_name) == 0) {
-                                float avg = calculateAverage(students[j].math, students[j].physics, students[j].english);
-                                printf("%s\t%d\t%d\t%d\t%d\t%.1f\n", students[j].name, students[j].student_id, students[j].math, students[j].physics, students[j].english, avg);
+                                printf("%s\t%d\t%d\t%d\t%d\t%.1f\n", students[j].name, students[j].student_id, students[j].math, students[j].physics, students[j].english, students[j].average);
                                 found = 1;
                             }
                         }
@@ -145,17 +157,36 @@ int main(void) {
                             printf("資料不存在。\n");
                         }
                     }
+                    printf("按任意鍵繼續...");
+                    getch(); // 等待使用者按下任意鍵
+                    system("cls"); // 清除螢幕
+                } else if (choice == 'd') {
+                    system("cls");
+                    if (num_students == 0) {
+                        printf("目前沒有學生資料。\n");
+                    } else {
+                        sortStudentsByAverage(students, num_students);
+                        printf("依平均成績排序的學生資料如下:\n");
+                        printf("姓名\t學號\t平均成績\n");
+                        printf("----------------------------\n");
+                        for (int j = 0; j < num_students; j++) {
+                            printf("%s\t%d\t%.1f\n", students[j].name, students[j].student_id, students[j].average);
+                        }
+                    }
+                    printf("按任意鍵繼續...");
                     getch(); // 等待使用者按下任意鍵
                     system("cls"); // 清除螢幕
                 } else if (choice == 'e') {
                     return 0;  // 退出程式
+                } else {
+                    printf("無效的選項，請重新輸入。\n");
                 }
             }
             break;
         } else {
-            printf("剩餘%d次機會\n", i-1);
+            printf("密碼錯誤。剩餘%d次機會\n", i-1);
             if (i == 1) {
-                printf("%c",'\a');   //發出警告音 
+                printf("%c",'\a');   // 發出警告音
                 return 0;
             }
         }
